@@ -32,6 +32,27 @@ of sixteen colors suitable for a wide range of applications.  Base16 is not a
 single theme but a set of guidelines with numerous implementations.")
     (license license:expat)))
 
+(define-public emacs-git-undo
+  (package
+    (name "emacs-git-undo")
+    (version "main")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/jwiegley/git-undo-el")
+             (commit "cf31e38e7889e6ade7d2d2b9f8719fd44f52feb5")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10f9h8dby3ygkjqwizrif7v1wpwc8iqam5bvayahrabs87s0lnbi"))))
+    (build-system emacs-build-system)
+    (inputs `())
+    (native-inputs `())
+    (home-page "")
+    (synopsis "")
+    (description "")
+    (license license:gpl3+)))
+
 (define-public emacs-xah-fly-keys
   (package
     (name "emacs-xah-fly-keys")
