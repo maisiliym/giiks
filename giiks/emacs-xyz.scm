@@ -1,6 +1,7 @@
 (define-module (giiks emacs-xyz)
   #:use-module ((guix licenses) #:prefix license:)
   #:use-module (guix packages)
+  #:use-module (guix gexp)
   #:use-module (guix download)
   #:use-module (guix git-download)
   #:use-module (guix build-system emacs)
@@ -117,20 +118,19 @@ simultaneous cursors.")
 
 (define-public emacs-shen-elisp
   (package
-    (name "emacs-shen-elisp")
-    (version "head")
-    (source
-     (origin
-       (method git-fetch)
-       (uri (git-reference
-             (url "https://github.com/deech/shen-elisp")
-             (commit "73b74c8d6e3a2ea34b667d177d9f130765bfe501")))
-       (file-name (git-file-name name version))
-       (sha256
-        (base32 "1ym048cmkghx373fb7n5m6r73q5nfa62m10mqr4nzhsizgyzdbrn"))))
+   (name "emacs-shen-elisp")
+   (version "dev")
+   (source
+    (origin
+     (method git-fetch)
+     (uri (git-reference
+           (url "https://github.com/maisiliym/shen-elisp")
+           (commit "71985e0a8c1b7642ba92efea6041586963fe741f")))
+     (file-name (git-file-name name version))
+     (sha256
+      (base32 "1h7v3bbljkw7lsxz4ijvw47c6fj070j0p268v4il2xh2mzw1nhjm"))))
     (build-system emacs-build-system)
     (home-page "https://github.com/deech/shen-elisp")
-    (synopsis "")
-    (description
-     "")
+    (synopsis "An implemenatation of the shen programming language in Elisp")
+    (description "")
     (license license:bsd-3)))
