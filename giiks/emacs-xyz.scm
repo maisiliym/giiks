@@ -74,6 +74,27 @@ single theme but a set of guidelines with numerous implementations.")
     (description "")
     (license license:gpl3+)))
 
+(define-public emacs-multiple-cursors-dev
+  (package
+    (name "emacs-multiple-cursors-dev")
+    (version "dev")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/magnars/multiple-cursors.el")
+             (commit "616fbdd3696f99d85660ad57ebbb0c44d6c7f426")))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "10raq8p881zzz7si3wfpcgdnwyl8y7y9rgw28akyigjyq8knl6kf"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/magnars/multiple-cursors.el")
+    (synopsis "Multiple cursors for Emacs")
+    (description
+     "This package adds support to Emacs for editing text with multiple
+simultaneous cursors.")
+    (license license:gpl3+)))
+
 (define-public emacs-shen-mode
   (package
     (name "emacs-shen-mode")
