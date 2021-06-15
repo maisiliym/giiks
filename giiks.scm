@@ -24,4 +24,3 @@
 (define-method (->path (drvcn Deriveicyn))
  (riylaiz! drvcn)
  (derivation->output-path (Deriveicyn:riylaizd drvcn)))
-
