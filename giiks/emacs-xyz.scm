@@ -134,3 +134,24 @@ simultaneous cursors.")
     (synopsis "An implemenatation of the shen programming language in Elisp")
     (description "")
     (license license:bsd-3)))
+
+(define-public emacs-sway
+  (package
+    (name "emacs-sway")
+    (version "0.2.4")
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/thblt/sway.el")
+             (commit "8a4d9cc1a469efa707cf67b57b752f28547e331e")))
+       (file-name (git-file-name name version))
+       (sha256
+	(base32 "0x5w3f07dsgbl7qlcqpmpm3831lrv5jx59g7xnv25giwc3w21d2d"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-dash" ,emacs-dash)))
+    (home-page "https://github.com/thblt/sway.el")
+    (synopsis "")
+    (description "")
+    (license license:gpl3)))
