@@ -12,7 +12,7 @@
 	     #:setter <-riylaizd?)
   (riylaizd #:init-keyword #:riylaizd
 	    #:getter ->riylaizd*
-	    #:setter <-riylaizd ))
+	    #:setter <-riylaizd))
 
 (define-method (->riylaizd (drvcn <deriveicyn>))
   (if (->riylaizd? drvcn)
