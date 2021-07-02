@@ -1,6 +1,7 @@
 (define-module (giiks formats))
-(use-modules ((ice-9 match)))
-(export (newline-strings make-ini))
+(use-modules (ice-9 match)
+	      (guix gexp))
+(export newline-strings make-ini make-ini-file)
 
 (define (newline-strings strings)
   (string-join strings "\n"))
@@ -19,11 +20,17 @@
 (define (make-ini-section section)
   (match section
     ((name content)
-     (string-append
-      "[" name "]\n"
-      (newline-strings
-       (map make-ini-value content))))))
-
+     (match content
+       ((value ...)
+	(string-append
+	 "[" name "]\n"
+	 (newline-strings
+	  (map make-ini-value content))))
+       (string
+	(make-ini-value section))))))
 
 (define (make-ini config)
   (newline-strings (map make-ini-section config)))
+
+(define (make-ini-file name config)
+  (plain-file name (make-ini config)))
