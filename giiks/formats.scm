@@ -6,6 +6,9 @@
 (define (newline-strings strings)
   (string-join strings "\n"))
 
+(define-public (space-strings strings)
+  (string-join strings " "))
+
 (define (make-ini-value conf)
   (match conf
     ((key value)

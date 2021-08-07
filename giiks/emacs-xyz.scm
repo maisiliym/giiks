@@ -8,6 +8,7 @@
 	     (gnu packages)
 	     (gnu packages emacs)
 	     (gnu packages emacs-xyz)
+	     ((gnu packages guile) #:select (guile-3.0-latest))
 	     (guix utils)
 	     (srfi srfi-1)
 	     (ice-9 match))
@@ -156,3 +157,24 @@ simultaneous cursors.")
     (synopsis "")
     (description "")
     (license license:gpl3)))
+
+(define-public emacs-good-scroll
+  (let ((git-ref "5792cd778b37c714e3a418bc1dfc420bd0e7e731"))
+    (package
+    (name "emacs-good-scroll")
+    (version git-ref)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/io12/good-scroll.el")
+             (commit git-ref)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0ldq5fm9xr4l9wix7hl78xa9fb805r13gjk1699gnflknkyg07hw"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/io12/good-scroll.el")
+    (synopsis "")
+    (description
+     "")
+    (license license:unlicense))))

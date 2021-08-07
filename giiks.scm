@@ -39,7 +39,15 @@
 	(->string file-path)
 	(error "Not a file" file-path))))
 
+;; (define-method (->string (file-path <string>))
+;;   (if (file-exists? file-path)
+;;       (call-with-input-file file-path get-string-all)
+;;       (error "Not a file" file-path)))
+
 (define-method (->string (file-path <string>))
-  (if (file-exists? file-path)
-      (call-with-input-file file-path get-string-all)
-      (error "Not a file" file-path)))
+  (let ((true-path
+	(if (file-exists? file-path)
+	    file-path
+	    (string-append (dirname (current-filename)) (canonicalize-path file-path)))))
+    (call-with-input-file  true-path get-string-all)))
+
