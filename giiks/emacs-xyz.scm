@@ -178,3 +178,23 @@ simultaneous cursors.")
     (description
      "")
     (license license:unlicense))))
+
+(define-public emacs-ligature
+  (let ((git-ref "3923baf1fb9bf509cc95b4b14d7d0e2f7c88e53c"))
+    (package
+    (name "emacs-ligature")
+    (version git-ref)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/mickeynp/ligature.el")
+             (commit git-ref)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "1zayga9072i4n6a90747d8h3w21zx042gnkcyimbb7jxxjyyiw7b"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/mickeynp/ligature.el")
+    (synopsis "")
+    (description "")
+    (license license:unlicense))))
