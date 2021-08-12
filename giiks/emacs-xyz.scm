@@ -198,3 +198,23 @@ simultaneous cursors.")
     (synopsis "")
     (description "")
     (license license:unlicense))))
+
+(define-public emacs-mini-frame
+  (let ((git-ref "b07faabfec1b5ba545dc1cb961545cc1e9d78db0"))
+    (package
+    (name "emacs-mini-frame")
+    (version git-ref)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/muffinmad/emacs-mini-frame")
+             (commit git-ref)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0b7znsgvycfx2brk782mi0n8i779n1r7pqwfq7s256rgi4fcyzap"))))
+    (build-system emacs-build-system)
+    (home-page "https://github.com/muffinmad/emacs-mini-frame")
+    (synopsis "")
+    (description "")
+    (license license:unlicense))))
