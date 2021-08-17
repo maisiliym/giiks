@@ -1,13 +1,23 @@
 (define-module (giiks formats))
-(use-modules (ice-9 match)
-	      (guix gexp))
-(export newline-strings make-ini make-ini-file)
+(use-modules (oop goops) (ice-9 match) (guix gexp))
+(export newline-strings make-ini make-ini-file
+	->NewlinedString ->SpacedString)
 
 (define (newline-strings strings)
   (string-join strings "\n"))
 
 (define-public (space-strings strings)
   (string-join strings " "))
+
+(define-method (->String (int <integer>)) (number->string int))
+(define-method (->String (str <string>)) str)
+
+;; (idea [multipleArgs macro?])
+(define-method (->NewlinedString (list <list>))
+  (newline-strings (map ->String list)))
+
+(define-method (->SpacedString (lst <list>))
+  (space-strings (map ->String lst)))
 
 (define (make-ini-value conf)
   (match conf
