@@ -1,7 +1,7 @@
 (define-module (giiks formats))
 (use-modules (oop goops) (ice-9 match) (guix gexp))
 (export newline-strings make-ini make-ini-file
-	->NewlinedString ->SpacedString)
+	->NewlinedString ->SpacedString ->DottedString)
 
 (define (newline-strings strings)
   (string-join strings "\n"))
@@ -18,6 +18,9 @@
 
 (define-method (->SpacedString (lst <list>))
   (space-strings (map ->String lst)))
+
+(define-method (->DottedString (lst <list>))
+  (string-join lst "."))
 
 (define (make-ini-value conf)
   (match conf
