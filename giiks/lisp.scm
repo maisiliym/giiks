@@ -175,7 +175,7 @@
 	 ))
       (arguments
        '(#:asd-files '("mockingbird-test.asd" "mockingbird.asd")
-	 #:tests? #f))
+	             #:tests? #f))
       (home-page "https://github.com/Chream/mockingbird.git")
       (synopsis "TBC")
       (description
@@ -252,8 +252,17 @@
 	 ("str" ,sbcl-cl-str)
 	 ("unix-opts" ,sbcl-unix-opts)))
       (arguments
-       '(#:asd-systems '("torrents")
-         #:tests? #f))
+       '(#:asd-systems
+         '("torrents")
+	 #:tests? #f
+	 #:phases
+	 (modify-phases %standard-phases
+	   (add-after 'create-asdf-configuration 'build-program
+	     (lambda* (#:key outputs #:allow-other-keys)
+	       (build-program
+		(string-append (assoc-ref outputs "out") "/bin/torrents")
+		outputs
+		#:entry-program '((torrents:main) 0)))))))
       (home-page "https://gitlab.com/vindarel/cl-torrents/")
       (synopsis "TBC")
       (description
@@ -281,7 +290,7 @@
        `(("closer-mop" ,sbcl-closer-mop)
 	 ("named-readtables" ,sbcl-named-readtables)))
       (arguments
-      `(#:tests? #f))
+       `(#:tests? #f))
       (home-page "https://github.com/vseloved/rutils.git")
       (synopsis "TBC")
       (description
