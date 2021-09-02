@@ -177,7 +177,7 @@ simultaneous cursors.")
     (synopsis "")
     (description
      "")
-    (license license:unlicense))))
+    (license #f))))
 
 (define-public emacs-ligature
   (let ((git-ref "3923baf1fb9bf509cc95b4b14d7d0e2f7c88e53c"))
@@ -197,7 +197,7 @@ simultaneous cursors.")
     (home-page "https://github.com/mickeynp/ligature.el")
     (synopsis "")
     (description "")
-    (license license:unlicense))))
+    (license #f))))
 
 (define-public emacs-mini-frame
   (let ((git-ref "b07faabfec1b5ba545dc1cb961545cc1e9d78db0"))
@@ -217,4 +217,27 @@ simultaneous cursors.")
     (home-page "https://github.com/muffinmad/emacs-mini-frame")
     (synopsis "")
     (description "")
-    (license license:unlicense))))
+    (license #f))))
+
+(define-public emacs-with-nyxt
+  (let ((git-ref "20c60c2543c271868ae22f6417dc45a2aae056c1"))
+    (package
+    (name "emacs-with-nyxt")
+    (version git-ref)
+    (source
+     (origin
+       (method git-fetch)
+       (uri (git-reference
+             (url "https://github.com/maisiliym/emacs-with-nyxt")
+             (commit git-ref)))
+       (file-name (git-file-name name version))
+       (sha256
+        (base32 "0hg991pk6kqdj1y8481ygyjq44snbsq9wfd8xd2p0n1c87zad1xw"))))
+    (build-system emacs-build-system)
+    (propagated-inputs
+     `(("emacs-slime" ,emacs-slime)
+       ("emacs-s" ,emacs-s)))
+    (home-page "https://github.com/ag91/emacs-with-nyxt")
+    (synopsis "")
+    (description "")
+    (license #f))))
