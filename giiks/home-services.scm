@@ -1,9 +1,7 @@
-(define-module (giiks home-services)
-  #:use-module (gnu home-services)
-  #:use-module (gnu home-services shepherd)
-  #:use-module (guix gexp)
-  #:use-module (gnu packages linux)
-  #:use-module (gnu home-services files))
+(define-module (giiks home-services))
+(use-modules
+ (gnu home-services) (gnu home-services shepherd)
+ (guix gexp) (gnu packages linux))
 
 (define (home-dbus-environment-variables-service _)
   '(("DBUS_SESSION_BUS_ADDRESS" . "unix:path=$XDG_RUNTIME_DIR/dbus.sock")))

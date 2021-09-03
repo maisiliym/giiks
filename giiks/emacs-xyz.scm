@@ -236,6 +236,7 @@ simultaneous cursors.")
     (build-system emacs-build-system)
     (propagated-inputs
      `(("emacs-slime" ,emacs-slime)
+       ("emacs-org" ,emacs-org)
        ("emacs-s" ,emacs-s)))
     (home-page "https://github.com/ag91/emacs-with-nyxt")
     (synopsis "")
