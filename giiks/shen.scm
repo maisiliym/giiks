@@ -1,7 +1,7 @@
 (define-module (giiks shen))
 (use-modules 
  (guix packages) (guix gexp) (guix download)
- (guix git-download) (guix build-system asdf)
+ (guix git-download) (guix build-system gnu)
  (gnu packages) (gnu packages lisp)
  (srfi srfi-1) (ice-9 match))
 
@@ -18,9 +18,9 @@
        (base32
         "1dzizvf14c6mkxyvpbhs2qkyg0lfm7liaqhs9sg6s734syiqrq7i")))))
 
-(define-public shen-sbcl-bootstrap
+(define-public shen-sbcl
   (package
-    (name "shen-sbcl-bootstrap")
+    (name "shen-sbcl")
     (version "3.0.3")
     (source
      (origin
@@ -31,18 +31,25 @@
        (sha256
         (base32
          "0mc10jlrxqi337m6ngwbr547zi4qgk69g1flz5dsddjy5x41j0yz"))))
-    (build-system asdf-build-system/sbcl)
+    (build-system gnu-build-system)
     (arguments
-     `(#:phases
+     `(#:tests? #f ;tests are run in build phase
+       #:phases
        (modify-phases %standard-phases
-         (add-after 'unpack 'link-shen-sources
-           (lambda _
-	     (symlink (assoc-ref %build-inputs "shen-sources")
-		      "kernel")))
-         (replace 'build (lambda _ (invoke "make" "sbcl"))))))
+	 (add-after 'unpack 'link-shen-sources
+	   (let* ((kernel (assoc-ref %build-inputs "shen-sources")))
+	     (lambda _ (symlink kernel "kernel"))))
+	 (replace 'configure (lambda _ #t))
+	 (replace 'build (lambda _ (invoke "make" "sbcl")))
+	 (replace 'install
+	   (let* ((out (assoc-ref %outputs "out"))
+		  (install-path (string-append out "/bin")))
+	     (lambda _
+	       (install-file "bin/sbcl/shen" install-path)))))))
     (inputs
-     `(("shen-sources" ,shen-sources)))
-    (home-page "https://github.com/html/clache.git")
+     `(("shen-sources" ,shen-sources)
+       ("sbcl" ,sbcl)))
+    (home-page "https://github.com/Shen-Language/shen-cl")
     (synopsis "TBC")
     (description "TBC")
     (license #f)))
