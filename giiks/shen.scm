@@ -3,6 +3,8 @@
  (guix packages) (guix gexp) (guix download)
  (guix git-download) (guix build-system gnu)
  (gnu packages) (gnu packages lisp)
+ ((gnu packages bootstrap) #:select (glibc-dynamic-linker))
+ ((gnu packages elf) #:select (patchelf))
  ((gnu packages chez) #:select (chez-scheme))
  ((gnu packages linux) #:select (util-linux))
  (srfi srfi-1) (ice-9 match))
@@ -82,18 +84,30 @@
 	   (replace 'build
 	     (let*
 		 ((out (assoc-ref %outputs "out"))
-		  (bin (string-append out "/bin")))
+		  (bin (string-append out "/bin"))
+		  (util-linux-lib (assoc-ref %build-inputs "util-linux-lib"))
+		  (libc (assoc-ref %build-inputs "libc"))
+		  (ld-so (string-append libc ,(glibc-dynamic-linker)))
+		  (rpath (string-append util-linux-lib "/lib" ":"
+					libc "/lib")))
 	       (lambda _
-		 (mkdir-p bin))))
+		 
+		 (invoke "patchelf" "--set-interpreter" ld-so
+			 "--set-rpath" rpath "bin/shen-scheme"))))
 	   (replace 'install
 	     (let* ((out (assoc-ref %outputs "out"))
-		    (install-path (string-append out "/bin")))
+		    (bin-path (string-append out "/bin"))
+		    (boot-file-path (string-append out "/lib/shen-scheme/")))
 	       (lambda _
-		 (install-file "bin/shen-scheme" install-path)))))))
+		 (mkdir-p bin-path)
+		 (mkdir-p boot-file-path)
+		 (install-file "bin/shen-scheme" bin-path)
+		 (install-file "lib/shen-scheme/shen.boot"
+			       boot-file-path)))))))
       (inputs
-       `(("libuuid" ,util-linux "lib")
-	 ("shen-sources" ,shen-sources)
-	 ("chez-scheme" ,chez-scheme)))
+       `(("patchelf" ,patchelf)
+	 ("util-linux-lib" ,util-linux "lib")
+	 ("shen-sources" ,shen-sources)))
       (home-page "https://github.com/Shen-Language/shen-cl")
       (synopsis "TBC")
       (description "TBC")
