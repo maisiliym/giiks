@@ -69,10 +69,10 @@
 	     (let*
 		 ((out (assoc-ref %outputs "out"))
 		  (bin (string-append out "/bin"))
-		  (sbcl-lib (assoc-ref %build-inputs "sbcl-lib"))
+		  (util-linux-lib (assoc-ref %build-inputs "util-linux-lib"))
 		  (libc (assoc-ref %build-inputs "libc"))
 		  (ld-so (string-append libc ,(glibc-dynamic-linker)))
-		  (rpath (string-append sbcl-lib "/lib" ":"
+		  (rpath (string-append util-linux-lib "/lib" ":"
 					libc "/lib")))
 	       (lambda _
 		 (invoke "patchelf" "--set-interpreter" ld-so
@@ -88,7 +88,7 @@
 			       boot-file-path)))))))
       (inputs
        `(("patchelf" ,patchelf)
-	 ("sbcl-lib" ,util-linux "lib")))
+	 ("util-linux-lib" ,util-linux "lib")))
       (home-page "https://github.com/tizoc/shen-scheme")
       (synopsis "TBC")
       (description "TBC")
@@ -156,37 +156,63 @@
           (base32
            "1041s8sb1yscyp8b5y79cxv2maja27lcdbq9g0116y2ji2qdmm5l"))))
       (build-system gnu-build-system)
+      (inputs
+       `(("shen-klambda" ,shen-klambda)
+	 ("shen-chez-bootstrap" ,shen-chez-bootstrap)
+	 ("chez-scheme" ,chez-scheme)
+	 ("util-linux-lib" ,util-linux "lib")))
       (arguments
        `(#:phases
 	 (modify-phases %standard-phases
 	   (replace 'configure
-	     (let* ((klambda (string-append
-			      (assoc-ref %build-inputs "shen-klambda")
-			      "/lib/klambda")))
-	       (lambda _
+	     (lambda _
+	       (let* ((klambda (string-append
+				(assoc-ref %build-inputs "shen-klambda")
+				"/lib/klambda")))
 		 (delete-file-recursively "kl")
-		 (copy-recursively klambda "kl"))))
+		 (copy-recursively klambda "kl")
+		 #t)))
 	   (replace 'build
-	     (let* ((out (assoc-ref %outputs "out")))
+	     (let* ((out (assoc-ref %outputs "out"))
+		    (chez-path (assoc-ref %build-inputs "chez-scheme"))
+		    (chez-version ,(package-version chez-scheme))
+		    (chez-lib (string-append chez-path "/lib/csv"
+					     chez-version "/ta6le"))
+		    (chez-kernel (string-append chez-lib "/kernel.o"))
+		    (include-flags (string-append "-I" chez-lib))
+		    (scheme-boot (string-append chez-lib "/scheme.boot"))
+		    (petite-boot (string-append chez-lib "/petite.boot"))
+		    (bootfile-script "make-shen-scheme.scm"))
 	       (lambda _
-		 (invoke "shen" "script"
-			 "scripts/do-build.shen"))))
+		 (invoke "shen" "eval" "--load" "scripts/build.shen"
+			 "--eval" "(build program \"shen-scheme.scm\")")
+		 (invoke "gcc" "-o" "shen-chez"
+			 chez-kernel "main.c"
+			 "-lm" "-ldl" "-lpthread" "-luuid"
+			 include-flags)
+		 (call-with-output-file bootfile-script
+		   (lambda (port)
+		     (write
+		      `(make-boot-file
+			"shen.boot" (list ,petite-boot ,scheme-boot)
+			"shen-scheme.scm")
+		      port)))
+		 (invoke "scheme" "--script" bootfile-script))))
 	   (replace 'check
 	     (let* ((out (assoc-ref %outputs "out"))
 		    (install-path (string-append out "/bin")))
 	       (lambda _
-		 (invoke "./shen-scheme" "script"
+		 (setenv "SHEN_SCHEME_BOOT" "./shen.boot")
+		 (invoke "./shen-chez" "script"
 			 "scripts/run-shen-tests.shen"))))
 	   (replace 'install
 	     (let* ((out (assoc-ref %outputs "out"))
-		    (install-path (string-append out "/bin")))
+		    (bin-path (string-append out "/bin"))
+		    (lib-path (string-append out "/lib/shen-scheme")))
 	       (lambda _
-		 (install-file "shen-scheme" install-path))))
+		 (install-file "shen-chez" bin-path)
+		 (install-file "shen.boot" lib-path))))
 	   )))
-      (inputs
-       `(("shen-klambda" ,shen-klambda)
-	 ("shen-chez-bootstrap" ,shen-chez-bootstrap)
-	 ("chez-scheme" ,chez-scheme)))
       (home-page "https://github.com/tizoc/shen-scheme")
       (synopsis "TBC")
       (description "TBC")
